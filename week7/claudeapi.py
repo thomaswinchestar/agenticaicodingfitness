@@ -1,6 +1,8 @@
 # PYTHON — agent.py — The Core Agent Framework
 import anthropic
 from dotenv import load_dotenv
+from datetime import datetime
+from anthropic.types import ToolParam
 
 load_dotenv()
 client = anthropic.Anthropic()
@@ -25,40 +27,42 @@ def chat(messages):
 #make initial list of messages
 messages = []
 
-system_prompt = """
-You are a patient math tutor.
-Do not directly answer a student's questions.
-Guide them to a solution step by step.
-"""
-messages = [
-        {
-            "role": "user",
-            "content": "what time is it now"
-        }
-]
-model = "claude-sonnet-4-6"
+def get_current_datetime(date_format="%Y-%m-%d %H:%M:%S"):
+    if not date_format:
+        raise ValueError("date_format cannot be empty")
+    return datetime.now().strftime(date_format)
 
-def chat(messages, system=None, temperature=1.0, stop_sequences=None):
-    params = {
-        "model": model,
-        "max_tokens": 1000,
-        "messages": messages,
-        "temperature": temperature
-    }
+get_current_datetime_schema = ToolParam({
+  "name": "get_current_datetime",
+  "description": "Returns the current date and time as a formatted string. Useful for answering questions about the current date, time, day of the week, or any time-related query. The output format is controlled by a Python strftime format string.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "date_format": {
+        "type": "string",
+        "description": "Python strftime format string controlling the output. Common patterns: \"%Y-%m-%d %H:%M:%S\" (full datetime), \"%Y-%m-%d\" (date only), \"%H:%M:%S\" (time only), \"%A\" (day of week). Must not be empty.",
+        "default": "%Y-%m-%d %H:%M:%S"
+      }
+    },
+    "required": []
+  }
+})
 
-    if system:
-        params["system"] = system
+messages.append({
+    "role": "user",
+    "content": "What is the exact time, formatted as HH:MM:SS?"
+})
 
-    if stop_sequences:
-        params["stop_sequences"] = stop_sequences
+response = client.messages.create(
+    model=model,
+    max_tokens=1000,
+    messages=messages,
+    tools=[get_current_datetime_schema],
+)
 
-    message = client.messages.create(**params)
-    return message.content[0].text
+messages.append({
+    "role": "assistant",
+    "content": response.content
+})
 
-# Low temperature - more predictable
-#answer = chat(messages, temperature=0.0)
-#print(answer)
-
-# High temperature - more creative
-answer = chat(messages, temperature=0.0)
-print(answer)
+print(messages)
