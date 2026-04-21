@@ -114,12 +114,21 @@ print(app.get_graph().draw_ascii())
 
 # %%
 if __name__ == "__main__":
+    import time
+
     samples = [
         "My dashboard won't load after the update.",
         "I was charged twice for last month's plan.",
         "Do you have a reference customer in retail?",
     ]
-    for s in samples:
+    # Gemini 2.5 Flash free tier: 5 requests per minute per project per model.
+    # Each sample fires supervisor + specialist = 2 requests. We sleep between
+    # samples to stay under the ceiling without paid credits. In production,
+    # add retry-on-429 or upgrade to paid tier for proper throughput.
+    for i, s in enumerate(samples):
+        if i > 0:
+            print("(pausing 13s to respect free-tier rate limit)")
+            time.sleep(13)
         out = app.invoke({
             "ticket_body": s,
             "messages": [],

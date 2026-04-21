@@ -13,3 +13,4 @@ claude-agent-sdk>=0.1.0
 ipykernel>=6.29.0
 jupyter>=1.1.0
 jupytext>=1.16.0
+grandalf>=0.8          # needed for app.get_graph().draw_ascii()

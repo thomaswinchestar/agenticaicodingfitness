@@ -29,8 +29,15 @@ load_dotenv()
 # modules that you want traced — if you already imported, restart the kernel.
 
 # %%
-os.environ["LANGSMITH_TRACING"] = "true"
-os.environ["LANGSMITH_PROJECT"] = "w10-hands-on"
+# Only enable tracing when a LangSmith key is present. Without a key, the
+# background uploader will 401 on every run and spam your console.
+if os.getenv("LANGSMITH_API_KEY"):
+    os.environ["LANGSMITH_TRACING"] = "true"
+    os.environ["LANGSMITH_PROJECT"] = "w10-hands-on"
+    print("LangSmith tracing: ON (project='w10-hands-on')")
+else:
+    os.environ["LANGSMITH_TRACING"] = "false"
+    print("LangSmith tracing: OFF (no LANGSMITH_API_KEY)")
 
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
 
@@ -88,19 +95,23 @@ def build(fn):
 
 # %%
 if __name__ == "__main__":
+    import time
+
+    # 3 tickets, one per category. Gemini 2.5 Flash free tier is 5 RPM per model
+    # per project, so we pause briefly between runs to stay under the ceiling.
     tickets = [
         "My dashboard won't load.",
         "I was charged twice.",
         "Do you have a reference in retail?",
-        "API returning 500s since this morning.",
-        "Refund request: cancelled yesterday, still charged.",
-        "Is there a mobile app?",
     ]
     print("=== Weak prompt ===")
     weak_app = build(classify_weak)
     for t in tickets:
         r = weak_app.invoke({"ticket": t, "category": None})
         print(f"  {t[:45]:<45} -> {r['category']!r}")
+
+    print("\n(pausing 15s to respect the free-tier 5 RPM limit)")
+    time.sleep(15)
 
     print("\n=== Strong prompt ===")
     strong_app = build(classify_strong)
