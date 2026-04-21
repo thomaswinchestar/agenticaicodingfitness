@@ -26,7 +26,7 @@ from langgraph.prebuilt import create_react_agent
 
 load_dotenv()
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0)
 
 
 # %% [markdown]
@@ -121,14 +121,14 @@ if __name__ == "__main__":
         "I was charged twice for last month's plan.",
         "Do you have a reference customer in retail?",
     ]
-    # Gemini 2.5 Flash free tier: 5 requests per minute per project per model.
-    # Each sample fires supervisor + specialist = 2 requests. We sleep between
-    # samples to stay under the ceiling without paid credits. In production,
-    # add retry-on-429 or upgrade to paid tier for proper throughput.
+    # Gemini 2.5 Flash-Lite free tier is 10 RPM (docs say 15; actual is 10).
+    # Each sample fires supervisor + specialist = 2 requests. Sleep between
+    # samples so 6 calls across 3 samples stay comfortably under 10 RPM.
+    # In production, wrap in retry-on-429 or upgrade to paid tier for throughput.
     for i, s in enumerate(samples):
         if i > 0:
-            print("(pausing 13s to respect free-tier rate limit)")
-            time.sleep(13)
+            print("(pausing 8s to respect the free-tier rate limit)")
+            time.sleep(8)
         out = app.invoke({
             "ticket_body": s,
             "messages": [],

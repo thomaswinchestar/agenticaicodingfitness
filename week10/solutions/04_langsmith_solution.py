@@ -22,7 +22,7 @@ os.environ["LANGSMITH_PROJECT"] = "w10-hands-on"
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from data.fake_tickets import batch  # noqa: E402
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0)
 
 
 class State(TypedDict):

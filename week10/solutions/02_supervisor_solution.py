@@ -18,7 +18,7 @@ from langgraph.prebuilt import create_react_agent
 
 load_dotenv()
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0)
 
 
 class SupervisorState(TypedDict):

@@ -40,7 +40,7 @@ You need:
 
 1. **Python 3.11+**. Check with `python3 --version`.
 2. **[uv](https://docs.astral.sh/uv/)** for fast package installs: `curl -LsSf https://astral.sh/uv/install.sh | sh`
-3. **A free Google AI Studio API key** for Gemini 2.5 Flash. Get one at <https://aistudio.google.com/apikey>. Free tier = 500 requests/day, 10/minute. No credit card required.
+3. **A free Google AI Studio API key** for Gemini 2.5 Flash-Lite. Get one at <https://aistudio.google.com/apikey>. Free tier (Apr 2026) = 1,000 requests/day, 15/minute. No credit card required. Regular Gemini 2.5 Flash is now only 20 RPD on the free tier after the Dec 2025 cuts, which is why we default to Flash-Lite for classroom use.
 4. *(Optional)* An Anthropic API key for Exercise 5. Sign up at <https://console.anthropic.com>.
 5. *(Optional)* A free LangSmith account for Exercise 4. <https://smith.langchain.com>.
 
@@ -133,7 +133,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 load_dotenv()
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0)
 
 def classify(state: SupportState) -> SupportState:
     prompt = (

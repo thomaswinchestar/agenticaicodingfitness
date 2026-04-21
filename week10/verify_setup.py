@@ -53,13 +53,13 @@ def check_keys() -> bool:
 
 
 def smoke_test_gemini() -> bool:
-    print("\nSmoke test — calling Gemini 2.5 Flash...")
+    print("\nSmoke test: calling Gemini 2.5 Flash-Lite...")
     if not os.getenv("GOOGLE_API_KEY"):
         print("  [skip] no GOOGLE_API_KEY")
         return False
     try:
         from langchain_google_genai import ChatGoogleGenerativeAI
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0)
         r = llm.invoke("Reply in exactly 3 words: env is ready")
         print(f"  [ok] {r.content.strip()}")
         return True

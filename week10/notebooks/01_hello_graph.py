@@ -23,7 +23,7 @@ from langgraph.graph import END, START, StateGraph
 load_dotenv()
 
 # %% [markdown]
-# ## Model (Gemini 2.5 Flash — free tier)
+# ## Model (Gemini 2.5 Flash-Lite, free tier: 15 RPM / 1,000 RPD)
 #
 # ```python
 # # ---- SWAP DEMO: same graph, different model via OpenRouter ----
@@ -42,7 +42,7 @@ load_dotenv()
 # ```
 
 # %%
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0)
 
 
 # %% [markdown]
